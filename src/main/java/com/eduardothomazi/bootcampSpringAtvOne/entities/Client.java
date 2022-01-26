@@ -1,5 +1,7 @@
 package com.eduardothomazi.bootcampSpringAtvOne.entities;
 
+import com.eduardothomazi.bootcampSpringAtvOne.dto.ClientDTO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
@@ -17,6 +19,7 @@ public class Client implements Serializable {
     private String name;
     private String cpf;
     private Double income;
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant birthDate;
     private Integer children;
 
@@ -30,6 +33,13 @@ public class Client implements Serializable {
         this.income = income;
         this.birthDate = birthDate;
         this.children = children;
+    }
+    public Client(ClientDTO dto) {
+        name = dto.getName();
+        cpf = dto.getCpf();
+        income = dto.getIncome();
+        birthDate = dto.getBirthDate();
+        children = dto.getChildren();
     }
 
     public Long getId() {
@@ -68,8 +78,9 @@ public class Client implements Serializable {
         return birthDate;
     }
 
-    public void setBirthDate(Instant birthDate) {
-        this.birthDate = birthDate;
+    @PrePersist
+    public void prePersist(){
+        birthDate = Instant.now();
     }
 
     public Integer getChildren() {

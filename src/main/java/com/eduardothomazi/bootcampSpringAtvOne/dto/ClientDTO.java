@@ -2,6 +2,7 @@ package com.eduardothomazi.bootcampSpringAtvOne.dto;
 
 import com.eduardothomazi.bootcampSpringAtvOne.entities.Client;
 
+import javax.persistence.Column;
 import java.time.Instant;
 import java.util.Optional;
 
