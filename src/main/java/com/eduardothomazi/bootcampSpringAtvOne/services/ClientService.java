@@ -11,9 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
@@ -22,10 +21,9 @@ public class ClientService {
     private ClientRepository repository;
 
     @Transactional(readOnly = true)
-    public List<ClientDTO> findAll(){
-        List<Client> list = repository.findAll();
-        List<ClientDTO> dtoList = list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
-        return dtoList;
+    public Page<Client> findPage(Integer page, Integer linesPerPage, String direction, String orderBy) {
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        return repository.findAll(pageRequest);
     }
 
     @Transactional(readOnly = true)
@@ -41,9 +39,26 @@ public class ClientService {
         repository.saveAndFlush(entity);
     }
 
-    @Transactional(readOnly = true)
-    public Page<Client> findPage(Integer page, Integer linesPerPage, String direction, String orderBy) {
-        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
-        return repository.findAll(pageRequest);
+    @Transactional
+    public ClientDTO update(Long id, ClientDTO dto){
+        try {
+            Client entity = repository.getOne(id);
+            entity.setName(dto.getName());
+            entity.setCpf(dto.getCpf());
+            entity.setIncome(dto.getIncome());
+            entity.setBirthDate(dto.getBirthDate());
+            entity.setChildren(dto.getChildren());
+            repository.save(entity);
+            return new ClientDTO(entity);
+        }
+        catch (EntityNotFoundException e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+
     }
+
+    public void delete(Long id){
+        repository.deleteById(id);
+    }
+
 }

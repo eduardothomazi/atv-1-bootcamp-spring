@@ -78,6 +78,10 @@ public class Client implements Serializable {
         return birthDate;
     }
 
+    public void setBirthDate(Instant birthDate) {
+        this.birthDate = birthDate;
+    }
+
     @PrePersist
     public void prePersist(){
         birthDate = Instant.now();

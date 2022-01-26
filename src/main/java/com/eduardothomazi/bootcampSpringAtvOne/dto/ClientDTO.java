@@ -31,9 +31,6 @@ public class ClientDTO {
         children = obj.getChildren();
     }
 
-    public ClientDTO(Optional<Client> obj ) {
-
-    }
 
     public String getName() {
         return name;
